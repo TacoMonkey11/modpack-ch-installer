@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "modpack-ch-installer"
+version = "1.0.0"
+description = ""
+authors = ["Spencer <75862693+TacoMonkey11@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "modpack_ch_installer"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+click = "^8.1.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
