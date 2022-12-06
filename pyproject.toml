@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "modpack-ch-installer"
-version = "1.0.0"
+version = "1.0.1"
 description = ""
 authors = ["Spencer <75862693+TacoMonkey11@users.noreply.github.com>"]
 readme = "README.md"
 packages = [{include = "modpack_ch_installer"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.7"
 click = "^8.1.3"
 
 
