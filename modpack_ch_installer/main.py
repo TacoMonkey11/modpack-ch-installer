@@ -113,14 +113,14 @@ def download_installer(filename, installer_url, args, output="."):
     if platform.system() == "Windows":
         filename += ".exe"
         urllib.request.urlretrieve(f"{installer_url}/windows", filename)
-        args.insert(0, filename)
+        args.insert(0, os.path.abspath(filename))
     elif platform.system() == "Linux" and platform.machine() == "aarch64":
         urllib.request.urlretrieve(f"{installer_url}/arm/linux", filename)
-        args.insert(0, filename)
+        args.insert(0, os.path.abspath(filename))
         subprocess.run(["chmod", "+x", f"./{filename}"])
     elif platform.system() == "Linux":
         urllib.request.urlretrieve(f"{installer_url}/linux", filename)
-        args.insert(0, filename)
+        args.insert(0, os.path.abspath(filename))
         subprocess.run(["chmod", "+x", f"./{filename}"])
     subprocess.run(args)
 
