@@ -50,9 +50,39 @@ def install(curseforge, output):
     filename = f"{output}/serverinstall_{pack_choices[pack_choice]}_{pack_choice_json['versions'][version_choice]['id']}"
 
     download_installer(filename, installer_url, installer_args)
-    os.chdir(output)
 
-    subprocess.run(installer_args)
+
+@click.command()
+def update():
+    base_url = "https://api.modpacks.ch/public/curseforge/" if os.path.exists(
+        "manifest.json") else "https://api.modpacks.ch/public/modpack/"
+    if not os.path.exists("version.json"):
+        click.echo("Unable to locate the version.json file. Are you in the right directory?")
+        exit(1)
+
+    sorting_num = 0 if os.path.exists("manifest.json") else -1
+
+    current_version = json.load(open("version.json"))
+    latest_version = json.load(urllib.request.urlopen(f"{base_url}{current_version['parent']}"))["versions"][
+        sorting_num]
+
+    should_update = click.prompt(
+        f"Current modpack version is {current_version['name']}, the latest is {latest_version['name']}. Would you like to update [y/N]",
+        type=click.BOOL, show_default=False, default=False)
+    if not should_update:
+        exit(1)
+
+    filename = f"serverinstall_{current_version['parent']}_{current_version['id']}"
+    new_filename = f"serverinstall_{current_version['parent']}_{latest_version['id']}"
+    if os.path.exists(filename):
+        os.remove(filename)
+    elif os.path.exists(filename + ".exe"):
+        os.remove(filename + ".exe")
+    installer_url = base_url + new_filename.replace("serverinstall_", "").replace("_", "/") + "/server"
+    args = ["--auto"]
+    if os.path.exists("manifest.json"):
+        args.append("--curseforge")
+    download_installer(new_filename, installer_url, args, ".")
 
 
 def search_packs(curseforge: bool):
@@ -78,7 +108,8 @@ def search_versions(pack):
     return version_choice
 
 
-def download_installer(filename, installer_url, args):
+def download_installer(filename, installer_url, args, output="."):
+    os.chdir(output)
     if platform.system() == "Windows":
         filename += ".exe"
         urllib.request.urlretrieve(f"{installer_url}/windows", filename)
@@ -91,6 +122,8 @@ def download_installer(filename, installer_url, args):
         urllib.request.urlretrieve(f"{installer_url}/linux", filename)
         args.insert(0, filename)
         subprocess.run(["chmod", "+x", f"./{filename}"])
+    subprocess.run(args)
 
 
 cli.add_command(install)
+cli.add_command(update)
