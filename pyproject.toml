@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "modpack-ch-installer"
-version = "1.1.1"
+version = "1.1.2"
 description = ""
 authors = ["Spencer <75862693+TacoMonkey11@users.noreply.github.com>"]
 readme = "README.md"
